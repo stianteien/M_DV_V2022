@@ -15,22 +15,23 @@ import matplotlib.pyplot as plt
 # Import data
 # =============================================================================
 
-img_70 = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR70cm/2019_04_vnir70cm.hdr")
-img_70 = spectral.SpyFile.load(img_70)
-img_30 = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR30cm/2019_04_vnir30cm.hdr")
-img_30 = spectral.SpyFile.load(img_30)
-roof_mask_30 = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
-roof_mask_70 = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_70cm.tif")
-roof_mask_70 = np.array(roof_mask_70)
+img_70_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR70cm/2019_04_vnir70cm.hdr")
+img_70_raw = spectral.SpyFile.load(img_70_raw)
+img_30_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR30cm/2019_04_vnir30cm.hdr")
+img_30_raw = spectral.SpyFile.load(img_30_raw)
+roof_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
+roof_mask_70_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_70cm.tif")
+roof_mask_70_raw = np.array(roof_mask_70_raw)
 
-roof_mask_70[roof_mask_70 > 0.01] = 1
+roof_mask_70_raw[roof_mask_70_raw > 0.01] = 1
 #img_70[img_70 > 200] = 200
 
 # =============================================================================
 # Cut image in 1/4 for easier memory
 # =============================================================================
-img_70 = img_70[:,:int(1169/4),:]
-roof_mask_70 = roof_mask_70[:, :int(1169/4)]
+cutoff = int(1169/4)
+img_70 = img_70_raw[:,300:600,:]
+roof_mask_70 = roof_mask_70_raw[:, cutoff:cutoff*2]
 
 # =============================================================================
 # Reduce to RGB  or 100 bands
@@ -41,7 +42,7 @@ img_70_100bands = img_70[:,:,:100]
 # =============================================================================
 # Combination of images
 # =============================================================================
-img_to_us = img_70_100bands
+img_to_us = img_70_rgb
 
 X_shape = 64
 y_shape = 64
@@ -71,5 +72,5 @@ y = np.array(y)
 # Save data
 # =============================================================================
 np.save("X_data.npy", X/100)
-np.save("y_data.npy", y/100)
+np.save("y_data.npy", y)
 
