@@ -33,21 +33,21 @@ img_70 = img_70[:,:int(1169/4),:]
 roof_mask_70 = roof_mask_70[:, :int(1169/4)]
 
 # =============================================================================
-# Reduce to RGB 
+# Reduce to RGB  or 100 bands
 # =============================================================================
 img_70_rgb = np.dstack((img_70[:,:,76], img_70[:,:,46], img_70[:,:,21]))
-
 img_70_100bands = img_70[:,:,:100]
 
 # =============================================================================
 # Combination of images
 # =============================================================================
+img_to_us = img_70_100bands
 
 X_shape = 64
 y_shape = 64
 n = 50
 
-X_r,X_c,X_d = img_70_rgb.shape
+X_r,X_c,X_d = img_to_us.shape
 y_r,y_c = roof_mask_70.shape
 
 
@@ -61,7 +61,7 @@ a,b = (np.random.choice(r_combinations, n), np.random.choice(c_combinations, n))
 c,d = (a+X_shape, b+X_shape)
 
 for a1,b1,c1,d1 in zip(a,b,c,d):
-    X.append(img_70_rgb[a1:c1, b1:d1].reshape(X_shape,X_shape,X_d)) 
+    X.append(img_to_us[a1:c1, b1:d1].reshape(X_shape,X_shape,X_d)) 
     y.append(roof_mask_70[a1:c1, b1:d1].reshape(y_shape,y_shape,1))
     
 X = np.array(X)
