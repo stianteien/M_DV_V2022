@@ -30,8 +30,8 @@ roof_mask_70_raw[roof_mask_70_raw > 0.01] = 1
 # Cut image in 1/4 for easier memory
 # =============================================================================
 cutoff = int(1169/4)
-img_70 = img_70_raw[:,300:600,:]
-roof_mask_70 = roof_mask_70_raw[:, cutoff:cutoff*2]
+img_70 = img_70_raw[:,:cutoff,:]
+roof_mask_70 = roof_mask_70_raw[:, :cutoff]
 
 # =============================================================================
 # Reduce to RGB  or 100 bands
@@ -42,7 +42,7 @@ img_70_100bands = img_70[:,:,:100]
 # =============================================================================
 # Combination of images
 # =============================================================================
-img_to_us = img_70_rgb
+img_to_us = img_70_100bands
 
 X_shape = 64
 y_shape = 64
