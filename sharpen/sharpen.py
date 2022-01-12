@@ -52,6 +52,9 @@ n = 50
 # SHORTCUT DENNER EKKE GREI EGENTLIG!
 img_70_gray = img_70_rgb
 img_30_gray = img_30_rgb
+img_70_gray[img_70_gray > 200] = 200
+img_30_gray[img_30_gray > 200] = 200
+
 
 X_r,X_c,X_d = img_70_gray.shape
 y_r,y_c,y_d = img_30_gray.shape
@@ -74,6 +77,9 @@ for _ in range(n):
 
 X = np.array(X)
 y = np.array(y)
+
+np.save("X_data.npy", X)
+np.save("y_data.npy", y)
 
 
 # =============================================================================
