@@ -49,8 +49,12 @@ X_shape = 30
 y_shape = 70
 n = 50
 
-X_r,X_c = img_70_gray.shape
-y_r,y_c = img_30_gray.shape
+# SHORTCUT DENNER EKKE GREI EGENTLIG!
+img_70_gray = img_70_rgb
+img_30_gray = img_30_rgb
+
+X_r,X_c,X_d = img_70_gray.shape
+y_r,y_c,y_d = img_30_gray.shape
 
 
 X = []
@@ -65,8 +69,8 @@ for _ in range(n):
     a,b = (np.random.choice(r_combinations), np.random.choice(c_combinations))
     c,d = (int(a*(7/3)), int(b*(7/3)))
  
-    X.append(img_70_gray[a:a+X_shape, b:b+X_shape].reshape(X_shape,X_shape,1))  
-    y.append(img_30_gray[c:c+y_shape, d:d+y_shape].reshape(y_shape,y_shape,1))
+    X.append(img_70_gray[a:a+X_shape, b:b+X_shape].reshape(X_shape,X_shape,X_d))  
+    y.append(img_30_gray[c:c+y_shape, d:d+y_shape].reshape(y_shape,y_shape,y_d))
 
 X = np.array(X)
 y = np.array(y)
