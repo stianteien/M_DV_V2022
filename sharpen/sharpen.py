@@ -45,8 +45,8 @@ img_70_gray = img_70[:,:,76]
 # Extract n amount of images from image
 # =============================================================================
 
-X_shape = 60
-y_shape = 140
+X_shape = 30
+y_shape = 70
 n = 50
 
 X_r,X_c = img_70_gray.shape
