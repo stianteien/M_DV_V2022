@@ -54,6 +54,8 @@ img_70_gray = img_70_rgb
 img_30_gray = img_30_rgb
 img_70_gray[img_70_gray > 200] = 200
 img_30_gray[img_30_gray > 200] = 200
+img_70_gray = img_70_gray/200
+img_30_gray = img_30_gray/200
 
 
 X_r,X_c,X_d = img_70_gray.shape
