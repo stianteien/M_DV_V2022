@@ -10,6 +10,8 @@ import numpy as np
 import spectral
 import matplotlib.pyplot as plt
 
+from sklearn.decomposition import PCA
+
 
 # =============================================================================
 # Import data
@@ -42,7 +44,7 @@ img_70_100bands = img_70[:,:,:100]
 # =============================================================================
 # Combination of images
 # =============================================================================
-img_to_us = img_70_100bands
+img_to_us = img_70
 
 X_shape = 64
 y_shape = 64
