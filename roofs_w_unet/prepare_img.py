@@ -32,8 +32,8 @@ roof_mask_70_raw[roof_mask_70_raw > 0.01] = 1
 # Cut image in 1/4 for easier memory
 # =============================================================================
 cutoff = int(1169/4)
-img_70 = img_70_raw[:,:cutoff,:]
-roof_mask_70 = roof_mask_70_raw[:, :cutoff]
+img_70 = img_70_raw[:,cutoff:cutoff*2,:]
+roof_mask_70 = roof_mask_70_raw[:, cutoff:cutoff*2]
 
 # =============================================================================
 # Reduce to RGB  or 100 bands
@@ -68,11 +68,11 @@ for a1,b1,c1,d1 in zip(a,b,c,d):
     y.append(roof_mask_70[a1:c1, b1:d1].reshape(y_shape,y_shape,1))
     
 X = np.array(X)
-y = np.array(y) #test
+y = np.array(y)
 
 # =============================================================================
 # Save data
 # =============================================================================
-np.save("X_data.npy", X/100)
-np.save("y_data.npy", y)
+np.save("X_data_unseen.npy", X/100)
+np.save("y_data_unseen.npy", y)
 
