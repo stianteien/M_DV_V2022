@@ -24,16 +24,18 @@ img_30_raw = spectral.SpyFile.load(img_30_raw)
 roof_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
 roof_mask_70_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_70cm.tif")
 roof_mask_70_raw = np.array(roof_mask_70_raw)
+roof_mask_30_raw = np.array(roof_mask_30_raw)
 
 roof_mask_70_raw[roof_mask_70_raw > 0.01] = 1
+roof_mask_30_raw[roof_mask_30_raw > 0.01] = 1
 #img_70[img_70 > 200] = 200
 
 # =============================================================================
 # Cut image in 1/4 for easier memory
 # =============================================================================
-cutoff = int(1169/4)
-img_70 = img_70_raw[:,cutoff:cutoff*2,:]
-roof_mask_70 = roof_mask_70_raw[:, cutoff:cutoff*2]
+cutoff = int(1169/2)
+img_70 = img_30_raw[:,cutoff:cutoff*2,:] # NB!
+roof_mask_70 = roof_mask_30_raw[:, cutoff:cutoff*2]
 
 # =============================================================================
 # Reduce to RGB  or 100 bands
@@ -46,8 +48,8 @@ img_70_100bands = img_70[:,:,:100]
 # =============================================================================
 img_to_us = img_70
 
-X_shape = 64
-y_shape = 64
+X_shape = 128
+y_shape = 128
 n = 50
 
 X_r,X_c,X_d = img_to_us.shape
@@ -73,6 +75,6 @@ y = np.array(y)
 # =============================================================================
 # Save data
 # =============================================================================
-np.save("X_data_unseen.npy", X/100)
-np.save("y_data_unseen.npy", y)
+np.save("../../data/u_net_roofs/X_data_unseen.npy", X/100)
+np.save("../../data/u_net_roofs/y_data_unseen.npy", y)
 
