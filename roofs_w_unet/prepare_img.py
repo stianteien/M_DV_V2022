@@ -68,7 +68,7 @@ for a1,b1,c1,d1 in zip(a,b,c,d):
     y.append(roof_mask_70[a1:c1, b1:d1].reshape(y_shape,y_shape,1))
     
 X = np.array(X)
-y = np.array(y)
+y = np.array(y) #test
 
 # =============================================================================
 # Save data
