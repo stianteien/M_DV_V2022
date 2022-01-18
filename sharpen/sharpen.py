@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
+import spectral
 
 from keras.models import Sequential
 from keras.layers import Input, Dense, Conv2D, Flatten, \
@@ -23,30 +24,32 @@ from keras.layers import Input, Dense, Conv2D, Flatten, \
 # Load data
 # =============================================================================
 
-img_70 = np.load("E:/M-DV-STeien/Sharping_test/2019_04_vnir70cm_utdrag.npy")
-img_30 = np.load("E:/M-DV-STeien/Sharping_test/2019_04_vnir30cm_utdrag.npy")
+#img_70 = np.load("E:/M-DV-STeien/Sharping_test/2019_04_vnir70cm_utdrag.npy")
+#img_30 = np.load("E:/M-DV-STeien/Sharping_test/2019_04_vnir30cm_utdrag.npy")
+img_70_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR70cm/2019_04_vnir70cm.hdr")
+img_70_raw = spectral.SpyFile.load(img_70_raw)
+img_30_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR30cm/2019_04_vnir30cm.hdr")
+img_30_raw = spectral.SpyFile.load(img_30_raw)
 
 
 # =============================================================================
 # Reduce to fitting size and use only RGB
 # =============================================================================
-img_30_rgb = np.dstack((img_30[:,:,76],
-                        img_30[:,:,46],
-                        img_30[:,:,21]))
-img_70_rgb = np.dstack((img_70[:,:,76],
-                        img_70[:,:,46],
-                        img_70[:,:,21]))
+img_30_rgb = np.dstack((img_30_raw[:,:,76],
+                        img_30_raw[:,:,46],
+                        img_30_raw[:,:,21]))
+img_70_rgb = np.dstack((img_70_raw[:,:,76],
+                        img_70_raw[:,:,46],
+                        img_70_raw[:,:,21]))
 
-img_30_gray = img_30[:,:,76]
-img_70_gray = img_70[:,:,76]
+img_30_gray = img_30_raw[:,:,76]
+img_70_gray = img_70_raw[:,:,76]
 
 
 # =============================================================================
 # Extract n amount of images from image
 # =============================================================================
 
-X_shape = 30
-y_shape = 70
 n = 50
 
 # SHORTCUT DENNER EKKE GREI EGENTLIG!
@@ -61,24 +64,30 @@ img_30_gray = img_30_gray/200
 X_r,X_c,X_d = img_70_gray.shape
 y_r,y_c,y_d = img_30_gray.shape
 
-
+X_shape = 55
+y_shape = 128
+    
+    
 X = []
 y = []
+    
+r_combinations = [i for i in np.linspace(0, X_r-X_shape, X_r-X_shape+1, dtype=int)]
+c_combinations = [i for i in np.linspace(0, X_c-X_shape, X_c-X_shape+1, dtype=int)]
 
-r_combinations = [i for i in np.linspace(0, X_r-X_shape, X_r-X_shape+1, dtype=int) 
-                if (i*(7/3)).is_integer()]
-c_combinations = [i for i in np.linspace(0, X_c-X_shape, X_c-X_shape+1, dtype=int) 
-                if (i*(7/3)).is_integer()]
-
-for _ in range(n):
-    a,b = (np.random.choice(r_combinations), np.random.choice(c_combinations))
-    c,d = (int(a*(7/3)), int(b*(7/3)))
  
-    X.append(img_70_gray[a:a+X_shape, b:b+X_shape].reshape(X_shape,X_shape,X_d))  
-    y.append(img_30_gray[c:c+y_shape, d:d+y_shape].reshape(y_shape,y_shape,y_d))
+a,b = (np.random.choice(r_combinations, n), np.random.choice(c_combinations, n))
+c,d = (np.floor(a*(128/55)), np.floor(b*(128/55)))
 
+
+for a1,b1,c1,d1 in zip(a,b,c,d):
+    c1 = int(c1)
+    d1 = int(d1)
+    X.append(img_70_gray[a1:a1+X_shape, b1:b1+X_shape].reshape(X_shape,X_shape,X_d)) 
+    y.append(img_30_gray[c1:c1+y_shape, d1:d1+y_shape].reshape(y_shape,y_shape,y_d))
+        
 X = np.array(X)
 y = np.array(y)
+    
 
 np.save("X_data.npy", X)
 np.save("y_data.npy", y)
@@ -115,10 +124,10 @@ model.compile(optimizer='adam',
 # =============================================================================
 # Train test split
 # =============================================================================
-X_train, X_test, y_train, y_test = train_test_split(X, 
-                                                    y, 
-                                                    test_size=0.2, 
-                                                    random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(X, 
+#                                                     y, 
+#                                                     test_size=0.2, 
+#                                                     random_state=42)
 
 
 # =============================================================================
@@ -126,7 +135,7 @@ X_train, X_test, y_train, y_test = train_test_split(X,
 # =============================================================================
 
 
-history = model.fit(X_train,y_train,
-                    validation_data=(X_test,y_test),
-                    epochs=200, batch_size=10)
+# history = model.fit(X_train,y_train,
+#                     validation_data=(X_test,y_test),
+#                     epochs=200, batch_size=10)
 
