@@ -122,11 +122,12 @@ class double_unet:
 
         m3 = self.rationalConvTransposed(m2, start=56,end=64)
 
-        #c1_2 = conv2d_block(m3, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+        c1_2 = self.conv2d_block(m3, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
         #p1_2 = MaxPooling2D((2, 2), name="first_pole_2")(c1_2)
-        #p1_2 = Dropout(dropout)(p1_2)
+        p1_2 = Dropout(dropout)(c1_2)
+        c1_22 = self.rationalConvTransposed(p1_2, start=1,end=2)
         
-        c2_2 = self.conv2d_block(m3, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
+        c2_2 = self.conv2d_block(p1_2, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
         p2_2 = MaxPooling2D((2, 2))(c2_2)
         p2_2 = Dropout(dropout)(p2_2)
         
@@ -158,7 +159,7 @@ class double_unet:
         c8_2 = self.conv2d_block(u8_2, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
         
         u9_2 = Conv2DTranspose(n_filters * 1, (3, 3), strides = strides, padding = 'same')(c8_2)
-        #u9_2 = concatenate([u9_2, c1_2])
+        u9_2 = concatenate([u9_2, c1_22])
         u9_2 = Dropout(dropout)(u9_2)
         c9_2 = self.conv2d_block(u9_2, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
 
