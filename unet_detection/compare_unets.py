@@ -117,7 +117,7 @@ for net,name in [
       # Save scores
       pred = model.predict([X_test])
       f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
-      f1_scores
+      f1_scores.append(f1)
     
       print(f"{name}:\tRound {i+1} of {n}. F1 score: {f1}")
     
