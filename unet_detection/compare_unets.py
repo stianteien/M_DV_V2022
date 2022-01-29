@@ -83,7 +83,7 @@ X_70_test = X_70_test[:,4:-4,4:-4,:]
 # Set up for testing all nets
 # =============================================================================
 f1_total = []
-for net,name in [(vUnet, "vanilla unet"),
+for net,name in [
             (unet2i, "doubleinput unet"),
             (unet2i_d, "doubleinput deep unet"),
             (dUnet, "double unet"),
@@ -127,7 +127,7 @@ for net,name in [(vUnet, "vanilla unet"),
     
     
 
-f1_total_df = pd.DataFrame(f1_total, columns=["vanilla unet","doubleinput unet",
+f1_total_df = pd.DataFrame(f1_total, columns=["doubleinput unet",
                                            "doubleinput deep unet","double unet",
                                            "triple unet"])
 f1_total.to_csv("f1_total_test.csv", f1_total)
