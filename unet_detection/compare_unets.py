@@ -89,8 +89,8 @@ for net,name in [
             (dUnet, "double unet"),
             (tUnet, "triple unet")]:
         
-    n = 3
-    epochs = 1
+    n = 10
+    epochs = 100
     f1_scores = []
     jacards = []
     
