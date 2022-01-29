@@ -4,7 +4,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activation, MaxPooling2D, Dropout, Conv2DTranspose, concatenate
 import numpy as np
 import tensorflow as tf
-from tensorflow.image import resize
+#from tensorflow.image import resize
 
 from unet_detection.models.vanilla_unet import vanilla_unet
 

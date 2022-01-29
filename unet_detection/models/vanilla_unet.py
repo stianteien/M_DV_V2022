@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activatio
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.image import resize
+#from tensorflow.image import resize
 
 
 class vanilla_unet:
@@ -25,7 +25,7 @@ class vanilla_unet:
         stride = np.ceil(start/end).astype(int)
         scaling = (end*stride)/start
         
-        x = resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
+        x = tf.image.resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
         if stride > 1:
             x = Conv2D(filters=filters, kernel_size=kernel_size, strides = (stride,stride), padding=padding)(x)
         return x
@@ -44,7 +44,7 @@ class vanilla_unet:
         
         if stride > 1:
             x = Conv2DTranspose(filters=filters, kernel_size=kernel_size, strides = (stride,stride), padding=padding)(x)
-        x = resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
+        x = tf.image.resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
         return x
 	
     
