@@ -13,7 +13,7 @@ import seaborn as sns
 from sklearn.metrics import f1_score
 
 from tensorflow.keras.layers import Input 
-from keras.utils.vis_utils import plot_model
+#from keras.utils.vis_utils import plot_model
 
 from models.vanilla_unet import vanilla_unet
 from models.unet_2input import unet_2input
@@ -124,7 +124,9 @@ for net,name in [
     
     f1_scores = np.array(f1_scores)
     f1_total.append(f1_scores)
-    
+
+f1_total = np.array(f1_total)
+print(f1_total.shape)
     
 
 f1_total_df = pd.DataFrame(f1_total, columns=["doubleinput unet",
