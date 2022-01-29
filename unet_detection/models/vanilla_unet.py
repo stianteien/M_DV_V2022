@@ -5,15 +5,54 @@ from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activatio
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from tensorflow.image import resize
 
 
 class vanilla_unet:
+    
+    def __init__(self, seed=None):
+        self.seed = seed
+
+    def rationalConv(self, x, filters=16, kernel_size=(3,3), padding="same", start=7, end=3):
+        """
+        Where ordinary convolutions down-scale by an integer stride, 
+        the rational version up-samples and down-scales an integer stride to 
+        reach a desired rational upscaling.
+
+        Example: 7 -> 3 => 7 * bilinear(9/7) = 9, 9 / conv(3) = 3
+        """
+        size = x.shape
+        stride = np.ceil(start/end).astype(int)
+        scaling = (end*stride)/start
+        
+        x = resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
+        if stride > 1:
+            x = Conv2D(filters=filters, kernel_size=kernel_size, strides = (stride,stride), padding=padding)(x)
+        return x
+
+    def rationalConvTransposed(self, x, filters=16, kernel_size=(3,3), padding="same", start=3, end=7):
+        """
+        Where ordinary transposed convolutions up-scale by an integer stride, 
+        the rational version up-scales an integer stride and down-samples to 
+        reach a desired rational upscaling.
+        
+        Example: 3 -> 7 => 3 * convTr(3) = 9, 9 * bilinear(7/9) = 7
+        """
+        size = x.shape
+        stride = np.ceil(end/start).astype(int)
+        scaling = end/start
+        
+        if stride > 1:
+            x = Conv2DTranspose(filters=filters, kernel_size=kernel_size, strides = (stride,stride), padding=padding)(x)
+        x = resize(x, tf.constant(np.round([size[1]*scaling, size[2]*scaling]), dtype="int32"))
+        return x
+	
+    
+    
     """
     Version of U-Net with dropout and size preservation (padding= 'same')
     """ 
-    def __init__(self, seed):
-        self.seed = seed
-
+    
     def conv2d_block(self, input_tensor, n_filters, kernel_size = 3, batchnorm = True):
         """Function to add 2 convolutional layers with the parameters passed to it"""
         # first layer
@@ -36,7 +75,8 @@ class vanilla_unet:
     def get_unet(self, input_img, n_filters = 16, dropout = 0.1,
                  batchnorm = True, n_classes = 2, last_activation="sigmoid"):
 
-        tf.random.set_seed(self.seed)
+        if self.seed:
+            tf.random.set_seed(self.seed)
 
         
         # Contracting Path
