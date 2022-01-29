@@ -141,7 +141,7 @@ for net,name in [
     for i in range(n):
       # Build model
       model = None
-      model = net.get_unet(input_img1, input_img1,
+      model = net.get_unet(input_img1, input_img2,
                              n_classes=2, last_activation='softmax')
     
       model.compile(optimizer='adam',
