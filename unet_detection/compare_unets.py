@@ -37,17 +37,17 @@ tUnet = triple_unet()
 # Import data
 # =============================================================================
 
-X_train = np.load("../../data/roofs/X_data.npy") 
-X_70_train = np.load("../../data/roofs/X_70_data.npy")
-y_train = np.load("../../data/roofs/y_data.npy")
+X_train = np.load("data/roofs/X_data.npy") 
+X_70_train = np.load("data/roofs/X_70_data.npy")
+y_train = np.load("data/roofs/y_data.npy")
 
-X_val = np.load("../../data/roofs/X_data_val.npy")
-X_70_val = np.load("../../data/roofs/X_70_data_val.npy")
-y_val = np.load("../../data/roofs/y_data_val.npy")
+X_val = np.load("data/roofs/X_data_val.npy")
+X_70_val = np.load("data/roofs/X_70_data_val.npy")
+y_val = np.load("data/roofs/y_data_val.npy")
 
-X_test = np.load("../../data/roofs/X_data_test.npy")
-X_70_test = np.load("../../data/roofs/X_70_data_test.npy")
-y_test = np.load("../../data/roofs/y_data_test.npy")
+X_test = np.load("data/roofs/X_data_test.npy")
+X_70_test = np.load("data/roofs/X_70_data_test.npy")
+y_test = np.load("data/roofs/y_data_test.npy")
 
 def redesign_y(y):
   n,r1,c1,d = y.shape
@@ -89,8 +89,8 @@ for net,name in [
             (dUnet, "double unet"),
             (tUnet, "triple unet")]:
         
-    n = 2
-    epochs = 3
+    n = 1
+    epochs = 1
     f1_scores = []
     jacards = []
     
