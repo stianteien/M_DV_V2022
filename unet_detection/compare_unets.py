@@ -73,9 +73,6 @@ y_test = redesign_y(y_test)
 # print(y_train.shape)
 # print(y_val.shape)
 # print(y_test.shape)
-x70u = X_70_train.copy()
-x70u_val = X_70_val.copy()
-x70u_test = X_70_test.copy()
 
 # Scale image down so each border is the same size when upsizing!
 X_70_train = X_70_train[:,4:-4,4:-4,:]
@@ -108,14 +105,14 @@ for net,name in [
                      metrics=['accuracy'])
       
       # Run net
-      hh = model.fit([x70u],
+      hh = model.fit([X_train],
                       y_train, 
                       batch_size=16,
                       epochs=epochs,
                       verbose=0)
       
       # Save scores
-      pred = model.predict([x70u_test])
+      pred = model.predict([X_test])
       f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
       f1_scores.append(f1)
     
@@ -152,14 +149,14 @@ for net,name in [
                      metrics=['accuracy'])
       
       # Run net
-      hh = model.fit([X_train],
+      hh = model.fit([X_train, X_70_train],
                       y_train, 
                       batch_size=16,
                       epochs=epochs,
                       verbose=0)
       
       # Save scores
-      pred = model.predict([X_test])
+      pred = model.predict([X_test, X_70_test])
       f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
       f1_scores.append(f1)
     
