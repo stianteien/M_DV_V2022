@@ -129,8 +129,8 @@ f1_total = np.array(f1_total)
 print(f1_total.shape)
     
 
-f1_total_df = pd.DataFrame(f1_total.T, columns=["doubleinput unet",
+df = pd.DataFrame(f1_total.T, columns=["doubleinput unet",
                                            "doubleinput deep unet","double unet",
                                            "triple unet"])
-f1_total_df.to_csv("f1_total_test.csv", f1_total_df)
+df.to_csv("f1_total_test.csv")
   
