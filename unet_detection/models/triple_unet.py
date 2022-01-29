@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 #from tensorflow.image import resize
 
-from unet_detection.models.vanilla_unet import vanilla_unet
+from models.vanilla_unet import vanilla_unet
 
 class triple_unet(vanilla_unet):
     """
