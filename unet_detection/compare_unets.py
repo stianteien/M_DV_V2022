@@ -108,14 +108,14 @@ for net,name in [
                      metrics=['accuracy'])
       
       # Run net
-      hh = model.fit([X_train],
+      hh = model.fit([x70u],
                       y_train, 
                       batch_size=16,
                       epochs=epochs,
                       verbose=0)
       
       # Save scores
-      pred = model.predict([X_test])
+      pred = model.predict([x70u_test])
       f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
       f1_scores.append(f1)
     
