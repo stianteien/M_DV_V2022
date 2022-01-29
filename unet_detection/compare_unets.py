@@ -89,7 +89,7 @@ for net,name in [
             (dUnet, "double unet"),
             (tUnet, "triple unet")]:
         
-    n = 1
+    n = 3
     epochs = 1
     f1_scores = []
     jacards = []
@@ -129,7 +129,7 @@ f1_total = np.array(f1_total)
 print(f1_total.shape)
     
 
-f1_total_df = pd.DataFrame(f1_total, columns=["doubleinput unet",
+f1_total_df = pd.DataFrame(f1_total.T, columns=["doubleinput unet",
                                            "doubleinput deep unet","double unet",
                                            "triple unet"])
 f1_total.to_csv("f1_total_test.csv", f1_total)
