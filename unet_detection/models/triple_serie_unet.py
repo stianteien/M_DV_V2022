@@ -118,9 +118,14 @@ class triple_unet(vanilla_unet):
         u9 = Dropout(dropout)(u9)
         c9 = self.conv2d_block(u9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
 
+        c10 = Conv2D(n_classes, (1, 1), activation=last_activation)(c9)
+
+        # Add inn img1 again
+        c11 = concatenate([c10, m1])
+
         # Third
         # Contracting Path 3
-        c1 = self.conv2d_block(c9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+        c1 = self.conv2d_block(c11, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
         p1 = MaxPooling2D((2, 2), name="first_pole_3")(c1)
         p1 = Dropout(dropout)(p1)
         

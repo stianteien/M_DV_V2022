@@ -21,6 +21,7 @@ from models.unet_2input_deep import unet_2input_deep
 from models.double_unet import double_unet
 from models.triple_unet import triple_unet
 from models.serie_unet import serie_unet
+from models.triple_serie_unet import triple_serie_unet
 
 # =============================================================================
 # Set up env
@@ -34,6 +35,7 @@ unet2i_d = unet_2input_deep()
 dUnet = double_unet()
 tUnet = triple_unet()
 sUnet = serie_unet()
+tsUnet = triple_serie_unet()
 
 # =============================================================================
 # Import data
@@ -129,7 +131,8 @@ for net,name in [
 
 for net,name in [
             
-            (dUnet, "double unet")]:
+            (dUnet, "double unet",
+             tsUnet, "triple serie unet")]:
         
     n = 10
     epochs = 150
@@ -170,6 +173,6 @@ for net,name in [
 f1_total = np.array(f1_total)
     
 
-df = pd.DataFrame(f1_total.T, columns=["vanilla unet","serie unet" ,"double unet"])
+df = pd.DataFrame(f1_total.T, columns=["vanilla unet","serie unet" ,"double unet", "triple serie unet"])
 df.to_csv("f1_total_test_serie.csv", index=False)
   
