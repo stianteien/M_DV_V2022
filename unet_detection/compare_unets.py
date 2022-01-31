@@ -131,8 +131,8 @@ for net,name in [
 
 for net,name in [
             
-            (dUnet, "double unet",
-             tsUnet, "triple serie unet")]:
+            (dUnet, "double unet"),
+             (tsUnet, "triple serie unet")]:
         
     n = 10
     epochs = 150
