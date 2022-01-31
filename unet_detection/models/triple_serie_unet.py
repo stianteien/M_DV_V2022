@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from models.vanilla_unet import vanilla_unet
 
-class triple_unet(vanilla_unet):
+class triple_serie_unet(vanilla_unet):
     """
     Version of U-Net with dropout and size preservation (padding= 'same')
     """ 

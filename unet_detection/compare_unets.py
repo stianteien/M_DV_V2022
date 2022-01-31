@@ -174,5 +174,5 @@ f1_total = np.array(f1_total)
     
 
 df = pd.DataFrame(f1_total.T, columns=["vanilla unet","serie unet" ,"double unet", "triple serie unet"])
-df.to_csv("f1_total_test_serie.csv", index=False)
+df.to_csv("f1_total_test_triple_serie.csv", index=False)
   
