@@ -125,10 +125,8 @@ for net,name in [
 
 
 for net,name in [
-            (unet2i, "doubleinput unet"),
-            (unet2i_d, "doubleinput deep unet"),
-            (dUnet, "double unet"),
-            (tUnet, "triple unet")]:
+            
+            (dUnet, "double unet")]:
         
     n = 10
     epochs = 150
@@ -169,8 +167,6 @@ for net,name in [
 f1_total = np.array(f1_total)
     
 
-df = pd.DataFrame(f1_total.T, columns=["vanilla unet", "doubleinput unet",
-                                           "doubleinput deep unet","double unet",
-                                           "triple unet"])
+df = pd.DataFrame(f1_total.T, columns=["vanilla unet", "double unet"])
 df.to_csv("f1_total_test.csv", index=False)
   
