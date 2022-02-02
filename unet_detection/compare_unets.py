@@ -157,8 +157,8 @@ def run_sim(path="data/roofs/", save_name="f1_01"):
 # Run sim on all 3 datasets
 # =============================================================================
 
-for path, fname in [('data/roofs/04/', "f1_04"),
-                    ('data/roofs/05/', "f1_05"),
+for path, fname in [#('data/roofs/04/', "f1_04"),
+                    #('data/roofs/05/', "f1_05"),
                     ('data/roofs/07/', "f1_07")]:
     
     run_sim(path, fname)
