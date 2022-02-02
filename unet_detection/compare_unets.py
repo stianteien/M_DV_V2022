@@ -22,6 +22,7 @@ from models.double_unet import double_unet
 from models.triple_unet import triple_unet
 from models.serie_unet import serie_unet
 from models.triple_serie_unet import triple_serie_unet
+from models.unet_plus_plus import unet_plus_plus
 
 # =============================================================================
 # Set up env
@@ -36,6 +37,7 @@ dUnet = double_unet()
 tUnet = triple_unet()
 sUnet = serie_unet()
 tsUnet = triple_serie_unet()
+unet_2plus = unet_plus_plus()
 
 # =============================================================================
 # Import data
@@ -87,10 +89,14 @@ X_70_test = X_70_test[:,4:-4,4:-4,:]
 # Set up for testing all nets
 # =============================================================================
 f1_total = []
+names = []
 
 for net,name in [
             (vUnet, "vanilla unet"),
-            (sUnet, "serie unet")]:
+            (sUnet, "serie unet"),
+            (unet_2plus, 'unet plus plus')]:
+    
+    names.append(name)
         
     n = 10
     epochs = 150
@@ -131,9 +137,9 @@ for net,name in [
 
 for net,name in [
             
-            (dUnet, "double unet"),
-             (tsUnet, "triple serie unet")]:
+            (dUnet, "double unet")]:
         
+    names.append(name)
     n = 10
     epochs = 150
     f1_scores = []
@@ -173,6 +179,6 @@ for net,name in [
 f1_total = np.array(f1_total)
     
 
-df = pd.DataFrame(f1_total.T, columns=["vanilla unet","serie unet" ,"double unet", "triple serie unet"])
-df.to_csv("f1_total_test_triple_serie.csv", index=False)
+df = pd.DataFrame(f1_total.T, columns=names)
+df.to_csv("f1_u_plus.csv", index=False)
   

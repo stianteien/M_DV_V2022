@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activatio
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from tensorflow.keras import backend as K
 #from tensorflow.image import resize
 
 
@@ -12,6 +13,13 @@ class vanilla_unet:
     
     def __init__(self, seed=None):
         self.seed = seed
+
+    def jacard(self, y_true, y_pred):
+        y_true_f = K.flatten(y_true)
+        y_pred_f = K.flatten(y_pred)
+        intersection = K.sum ( y_true_f * y_pred_f)
+        union = K.sum ( y_true_f + y_pred_f - y_true_f * y_pred_f)
+        return intersection/union
 
     def rationalConv(self, x, filters=16, kernel_size=(3,3), padding="same", start=7, end=3):
         """
