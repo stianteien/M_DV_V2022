@@ -16,7 +16,7 @@ class unet_plus_plus(vanilla_unet):
         super().__init__(seed)
  
 
-    def get_unet(self, input_img, n_filters = 16, dropout = 0.1,
+    def get_unet(self, input_img, im2, n_filters = 16, dropout = 0.1,
                  batchnorm = True, n_classes = 2, last_activation="sigmoid"):
 
         if self.seed:

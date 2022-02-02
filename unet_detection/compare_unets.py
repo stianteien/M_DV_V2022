@@ -91,52 +91,10 @@ X_70_test = X_70_test[:,4:-4,4:-4,:]
 f1_total = []
 names = []
 
-for net,name in [
-            (vUnet, "vanilla unet"),
+for net,name in [(vUnet, "vanilla unet"),
             (sUnet, "serie unet"),
-            (unet_2plus, 'unet plus plus')]:
-    
-    names.append(name)
-        
-    n = 10
-    epochs = 150
-    f1_scores = []
-    jacards = []
-    
-    input_img1 = Input(shape=(128,128,177))
-    
-    for i in range(n):
-      # Build model
-      model = None
-      model = net.get_unet(input_img1,
-                             n_classes=2, last_activation='softmax')
-    
-      model.compile(optimizer='adam',
-                     loss='binary_crossentropy',
-                     metrics=['accuracy'])
-      
-      # Run net
-      hh = model.fit([X_train],
-                      y_train, 
-                      batch_size=16,
-                      epochs=epochs,
-                      verbose=0)
-      
-      # Save scores
-      pred = model.predict([X_test])
-      f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
-      f1_scores.append(f1)
-    
-      print(f"{name}:\tRound {i+1} of {n}. F1 score: {f1}")
-    
-    
-    f1_scores = np.array(f1_scores)
-    f1_total.append(f1_scores)
-
-
-
-for net,name in [
-            
+            (unet_2plus, 'unet plus plus'),
+            (unet2i_d, 'unet 2inputs depth'),
             (dUnet, "double unet")]:
         
     names.append(name)
