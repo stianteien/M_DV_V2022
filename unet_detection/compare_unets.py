@@ -115,8 +115,8 @@ def run_sim(path="data/roofs/", save_name="f1_01"):
         f1_scores = []
         jacards = []
         
-        input_img1 = Input(shape=(128,128,177))
-        input_img2 = Input(shape=(56,56,220))
+        input_img1 = Input(shape=(128,128,X_train.shape[3]))
+        input_img2 = Input(shape=(56,56,X_70_train.shape[3]))
         
         for i in range(n):
           # Build model
