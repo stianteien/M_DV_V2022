@@ -21,23 +21,23 @@ import datetime
 # Import data
 # =============================================================================
 
-img_70_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR70cm/2019_04_vnir70cm.hdr")
+img_70_raw = spectral.open_image("E:/M-DV-STeien/august2019/07/hs/VNIR70cm/2019_07_vnir70cm.hdr")
 img_70_raw = spectral.SpyFile.load(img_70_raw)
-img_70_swir = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/SWIR70cm/2019_04_swir70cm_tostack.hdr")
+img_70_swir = spectral.open_image("E:/M-DV-STeien/august2019/07/hs/SWIR70cm/2019_07_swir70cm_tostack.hdr")
 img_70_swir = spectral.SpyFile.load(img_70_swir)
 
-img_30_raw = spectral.open_image("E:/M-DV-STeien/august2019/04/hs/VNIR30cm/2019_04_vnir30cm.hdr")
+img_30_raw = spectral.open_image("E:/M-DV-STeien/august2019/07/hs/VNIR30cm/2019_07_vnir30cm.hdr")
 img_30_raw = spectral.SpyFile.load(img_30_raw)
 
-nDSM_30 = Image.open("E:/M-DV-STeien/august2019/04/lidar/2019_04_nDSM_30cm_fitted.tif") 
+nDSM_30 = Image.open("E:/M-DV-STeien/august2019/07/lidar/2019_07_nDSM_30cm_fitted.tif") 
 nDSM_30 = np.array(nDSM_30)
 
-roof_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
-roof_mask_70_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_70cm.tif")
+roof_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/07/07_bygning_30cm.tif")
+roof_mask_70_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/07/07_bygning_70cm.tif")
 roof_mask_70_raw = np.array(roof_mask_70_raw)
 roof_mask_30_raw = np.array(roof_mask_30_raw)
 
-roads_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_veg_30cm.tif")
+roads_mask_30_raw = Image.open("E:/M-DV-STeien/databaseFKB2019/07/07_veg_30cm.tif")
 roads_mask_30_raw = np.array(roads_mask_30_raw)
 
 roof_mask_70_raw[roof_mask_70_raw > 0.01] = 1
@@ -70,27 +70,27 @@ def make_train_val_test(dist=[6,2,2]):
     
     # Make train data
     print(f"{datetime.datetime.now()} - Starts making train set")
-    make_set(fnameX="E:/M-DV-STeien/august2019/04/temp_data/X_data.npy",
-             fnameX_70="E:/M-DV-STeien/august2019/04/temp_data/X_70_data.npy",
-             fnamey="E:/M-DV-STeien/august2019/04/temp_data/y_data.npy",
+    make_set(fnameX="E:/M-DV-STeien/august2019/07/temp_data/X_data.npy",
+             fnameX_70="E:/M-DV-STeien/august2019/07/temp_data/X_70_data.npy",
+             fnamey="E:/M-DV-STeien/august2019/07/temp_data/y_data.npy",
              cutoff1=0,
              cutoff2=dist[0],
              n=100)
     
     # Make val data
     print(f"{datetime.datetime.now()} - Starts making val set")
-    make_set(fnameX="E:/M-DV-STeien/august2019/04/temp_data/X_data_val.npy",
-             fnameX_70="E:/M-DV-STeien/august2019/04/temp_data/X_70_data_val.npy",
-             fnamey="E:/M-DV-STeien/august2019/04/temp_data/y_data_val.npy",
+    make_set(fnameX="E:/M-DV-STeien/august2019/07/temp_data/X_data_val.npy",
+             fnameX_70="E:/M-DV-STeien/august2019/07/temp_data/X_70_data_val.npy",
+             fnamey="E:/M-DV-STeien/august2019/07/temp_data/y_data_val.npy",
              cutoff1=dist[0],
              cutoff2=dist[0]+dist[1],
              n=20)
     
     # Make test data
     print(f"{datetime.datetime.now()} - Starts making test set")
-    make_set(fnameX="E:/M-DV-STeien/august2019/04/temp_data/X_data_test.npy",
-             fnameX_70="E:/M-DV-STeien/august2019/04/temp_data/X_70_data_test.npy",
-             fnamey="E:/M-DV-STeien/august2019/04/temp_data/y_data_test.npy",
+    make_set(fnameX="E:/M-DV-STeien/august2019/07/temp_data/X_data_test.npy",
+             fnameX_70="E:/M-DV-STeien/august2019/07/temp_data/X_70_data_test.npy",
+             fnamey="E:/M-DV-STeien/august2019/07/temp_data/y_data_test.npy",
              cutoff1=dist[0]+dist[1],
              cutoff2=dist[0]+dist[1]+dist[2],
              n=50)

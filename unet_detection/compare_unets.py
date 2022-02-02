@@ -42,101 +42,123 @@ unet_2plus = unet_plus_plus()
 # =============================================================================
 # Import data
 # =============================================================================
-
-X_train = np.load("data/roofs/X_data.npy") 
-X_70_train = np.load("data/roofs/X_70_data.npy")
-y_train = np.load("data/roofs/y_data.npy")
-
-X_val = np.load("data/roofs/X_data_val.npy")
-X_70_val = np.load("data/roofs/X_70_data_val.npy")
-y_val = np.load("data/roofs/y_data_val.npy")
-
-X_test = np.load("data/roofs/X_data_test.npy")
-X_70_test = np.load("data/roofs/X_70_data_test.npy")
-y_test = np.load("data/roofs/y_data_test.npy")
-
 def redesign_y(y):
-  n,r1,c1,d = y.shape
-  # Adds a new dimension of layer too have two class problem.
-  yy = np.append(y, np.zeros((n, r1, c1,d)), axis=3)
-  for i in range(int(y.max()-1)):  
-    yy = np.append(yy, np.zeros((n, r1, c1,d)), axis=3)
-  yy1 = yy.copy()
-  yy1[:,:,:,0] = 0 # reset map
-  for i in range(n):
-    values = yy[i,:,:,0]
-    for r in range(r1):
-      for c in range(c1):
-        value = yy[i,r,c,0]
-        yy1[i,r,c,int(value)] = 1
+    n,r1,c1,d = y.shape
+    # Adds a new dimension of layer too have two class problem.
+    yy = np.append(y, np.zeros((n, r1, c1,d)), axis=3)
+    for i in range(int(y.max()-1)):  
+        yy = np.append(yy, np.zeros((n, r1, c1,d)), axis=3)
+    yy1 = yy.copy()
+    yy1[:,:,:,0] = 0 # reset map
+    for i in range(n):
+        values = yy[i,:,:,0]
+        for r in range(r1):
+            for c in range(c1):
+                value = yy[i,r,c,0]
+                yy1[i,r,c,int(value)] = 1
+    
+    return yy1
 
-  return yy1
+def load_data(path="data/roofs/"):
+    
+    X_train = np.load(path+"X_data.npy") 
+    X_70_train = np.load(path+"X_70_data.npy")
+    y_train = np.load(path+"y_data.npy")
+    
+    X_val = np.load(path+"X_data_val.npy")
+    X_70_val = np.load(path+"X_70_data_val.npy")
+    y_val = np.load(path+"y_data_val.npy")
+    
+    X_test = np.load(path+"X_data_test.npy")
+    X_70_test = np.load(path+"X_70_data_test.npy")
+    y_test = np.load(path+"y_data_test.npy")
 
-y_train = redesign_y(y_train)
-y_val = redesign_y(y_val)
-y_test = redesign_y(y_test)
+    
+    
+    y_train = redesign_y(y_train)
+    y_val = redesign_y(y_val)
+    y_test = redesign_y(y_test)
 
-# print(y_train.shape)
-# print(y_val.shape)
-# print(y_test.shape)
-
-# Scale image down so each border is the same size when upsizing!
-X_70_train = X_70_train[:,4:-4,4:-4,:]
-X_70_val = X_70_val[:,4:-4,4:-4,:]
-X_70_test = X_70_test[:,4:-4,4:-4,:]
+    # print(y_train.shape)
+    # print(y_val.shape)
+    # print(y_test.shape)
+    
+    # Scale image down so each border is the same size when upsizing!
+    X_70_train = X_70_train[:,4:-4,4:-4,:]
+    X_70_val = X_70_val[:,4:-4,4:-4,:]
+    X_70_test = X_70_test[:,4:-4,4:-4,:]
+    
+    return X_train, X_70_train, y_train, \
+           X_val, X_70_val, y_val, \
+           X_test, X_70_test, y_test
 
 # =============================================================================
 # Set up for testing all nets
 # =============================================================================
-f1_total = []
-names = []
 
-for net,name in [(vUnet, "vanilla unet"),
-            (sUnet, "serie unet"),
-            (unet_2plus, 'unet plus plus'),
-            (unet2i_d, 'unet 2inputs depth'),
-            (dUnet, "double unet")]:
+def run_sim(path="data/roofs/", save_name="f1_01"):
+
+    X_train, X_70_train, y_train, X_val, X_70_val, y_val, X_test, X_70_test, y_test = load_data(path)
+
+    f1_total = []
+    names = []
+    
+    for net,name in [(vUnet, "vanilla unet"),
+                (sUnet, "serie unet"),
+                (unet_2plus, 'unet plus plus'),
+                (unet2i_d, 'unet 2inputs depth'),
+                (dUnet, "double unet")]:
+            
+        names.append(name)
+        n = 10
+        epochs = 150
+        f1_scores = []
+        jacards = []
         
-    names.append(name)
-    n = 10
-    epochs = 150
-    f1_scores = []
-    jacards = []
+        input_img1 = Input(shape=(128,128,177))
+        input_img2 = Input(shape=(56,56,220))
+        
+        for i in range(n):
+          # Build model
+          model = None
+          model = net.get_unet(input_img1, input_img2,
+                                 n_classes=2, last_activation='softmax')
+        
+          model.compile(optimizer='adam',
+                         loss='binary_crossentropy',
+                         metrics=['accuracy'])
+          
+          # Run net
+          hh = model.fit([X_train, X_70_train],
+                          y_train, 
+                          batch_size=16,
+                          epochs=epochs,
+                          verbose=0)
+          
+          # Save scores
+          pred = model.predict([X_test, X_70_test])
+          f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
+          f1_scores.append(f1)
+        
+          print(f"{name}:\tRound {i+1} of {n}. F1 score: {f1}")
+        
+        
+        f1_scores = np.array(f1_scores)
+        f1_total.append(f1_scores)
     
-    input_img1 = Input(shape=(128,128,177))
-    input_img2 = Input(shape=(56,56,220))
+    f1_total = np.array(f1_total)
+        
     
-    for i in range(n):
-      # Build model
-      model = None
-      model = net.get_unet(input_img1, input_img2,
-                             n_classes=2, last_activation='softmax')
-    
-      model.compile(optimizer='adam',
-                     loss='binary_crossentropy',
-                     metrics=['accuracy'])
-      
-      # Run net
-      hh = model.fit([X_train, X_70_train],
-                      y_train, 
-                      batch_size=16,
-                      epochs=epochs,
-                      verbose=0)
-      
-      # Save scores
-      pred = model.predict([X_test, X_70_test])
-      f1 = f1_score(y_test.argmax(axis=3).flatten(), pred.argmax(axis=3).flatten())
-      f1_scores.append(f1)
-    
-      print(f"{name}:\tRound {i+1} of {n}. F1 score: {f1}")
-    
-    
-    f1_scores = np.array(f1_scores)
-    f1_total.append(f1_scores)
-
-f1_total = np.array(f1_total)
-    
-
-df = pd.DataFrame(f1_total.T, columns=names)
-df.to_csv("f1_u_plus.csv", index=False)
+    df = pd.DataFrame(f1_total.T, columns=names)
+    df.to_csv(save_name+".csv", index=False)
   
+
+# =============================================================================
+# Run sim on all 3 datasets
+# =============================================================================
+
+for path, fname in [('data/roofs/04/', "f1_04"),
+                    ('data/roofs/05/', "f1_05"),
+                    ('data/roofs/07/', "f1_07")]:
+    
+    run_sim(path, fname)
