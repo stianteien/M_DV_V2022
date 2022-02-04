@@ -21,7 +21,7 @@ class vanilla_unet:
         union = K.sum ( y_true_f + y_pred_f - y_true_f * y_pred_f)
         return intersection/union
     
-    def dice_coef(y_true, y_pred, smooth=1):
+    def dice_coef(self, y_true, y_pred, smooth=1):
         y_true_f = K.flatten(y_true)
         y_pred_f = K.flatten(y_pred)
         intersection = K.sum(y_true_f * y_pred_f)
