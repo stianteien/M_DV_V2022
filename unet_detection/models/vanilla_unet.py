@@ -20,6 +20,17 @@ class vanilla_unet:
         intersection = K.sum ( y_true_f * y_pred_f)
         union = K.sum ( y_true_f + y_pred_f - y_true_f * y_pred_f)
         return intersection/union
+    
+    def DiceLoss(self, targets, inputs, smooth=1e-6):
+        
+        #flatten label and prediction tensors
+        inputs = K.flatten(inputs)
+        targets = K.flatten(targets)
+        
+        intersection = K.sum(K.dot(targets, inputs))
+        dice = (2*intersection + smooth) / (K.sum(targets) + K.sum(inputs) + smooth)
+        return 1 - dice
+    
 
     def rationalConv(self, x, filters=16, kernel_size=(3,3), padding="same", start=7, end=3):
         """
