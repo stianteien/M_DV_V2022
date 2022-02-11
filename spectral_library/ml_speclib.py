@@ -56,8 +56,8 @@ swir = spectral.SpyFile.load(swir_raw)
 
 hs = np.dstack([vnir, swir])
 
-hs_small = hs[:, :500, :]
-roofs = roofs[:, :500]
+hs_small = hs[:, :, :]
+roofs = roofs[:, :]
 plt.imshow(np.dstack([hs_small[:,:,76],hs_small[:,:,46],hs_small[:,:,21]])/2500)
 
 #hs_small[roofs < 0.01] = 0

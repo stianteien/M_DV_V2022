@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 import spectral
 import matplotlib.pyplot as plt
-from lib.add_xy_marks import add_xy_marks
 
 from sklearn.decomposition import PCA
 import datetime
@@ -70,6 +69,7 @@ class data_maker:
         assert sum(dist) == 10, "sum of dist != 10 (100%)"
         
         self.pca = PCA(n_components=5)
+        self.pca_70 = PCA(n_components=5)
         
         # Make train data
         print(f"{datetime.datetime.now()} - Starts making train set")
@@ -124,10 +124,13 @@ class data_maker:
         # PCA on HS!
         # =============================================================================
         x,y,d = hs_img.shape
+        x_70,y_70,d_70 = hs_img_70.shape
         if cutoff1 == 0:
             self.pca.fit(hs_img.reshape((x*y, d)))
+            self.pca_70.fit(hs_img_70.reshape((x_70*y_70,d_70)))
         
         hs_img = self.pca.transform(hs_img.reshape((x*y, d))).reshape((x,y,self.pca.n_components))
+        hs_img_70 = self.pca_70.transform(hs_img_70.reshape((x_70*y_70, d_70))).reshape((x_70,y_70,self.pca_70.n_components))
                 
         
         # =============================================================================
