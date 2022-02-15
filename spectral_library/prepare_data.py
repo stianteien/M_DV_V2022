@@ -56,7 +56,7 @@ class data_maker:
                  fnamey="E:/M-DV-STeien/juni2021/04/temp_data/y_data.npy",
                  cutoff1=0,
                  cutoff2=dist[0],
-                 n=100)
+                 n=150)
         
         # Make val data
         print(f"{datetime.datetime.now()} - Starts making val set")
@@ -150,13 +150,13 @@ class data_maker:
         X = np.pad(X, ((0,0), # axis0
                       (border_size, border_size), #axis1
                       (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=0)
+                      (0,0)), mode='constant', constant_values=-1)
         
         
         y = np.pad(y, ((0,0), # axis0
                       (border_size, border_size), #axis1
                       (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=0)
+                      (0,0)), mode='constant', constant_values=-1)
     
         
         

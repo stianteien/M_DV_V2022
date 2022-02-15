@@ -114,8 +114,8 @@ colors=mcp.gen_color(cmap="tab20",n=11)
 colormap = ListedColormap(colors)
 
 plt.imshow(ss, cmap=colormap)
-cbar = plt.colorbar(ticks=[-1,0,1,2,3,4,5,6,7,8,9])
-cbar.ax.set_yticklabels(ticks)
+cbar = plt.colorbar(ticks=[-1,0,1,2,3,4,5,6,7,8,9], orientation='horizontal')
+cbar.ax.set_xticklabels(ticks, rotation=25, ha="right")
 plt.show()
 
 
