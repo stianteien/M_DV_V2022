@@ -28,7 +28,7 @@ import datetime
 roofs = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
 roofs = np.array(roofs)
 
-label = np.load("label.npy")
+label = np.load("label_few.npy")
 
 nDSM_30 = Image.open("E:/M-DV-STeien/juni2021/04/lidar/2021_04_nDSM_30cm_fitted.tif") 
 nDSM_30 = np.array(nDSM_30)
@@ -150,13 +150,13 @@ class data_maker:
         X = np.pad(X, ((0,0), # axis0
                       (border_size, border_size), #axis1
                       (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=-1)
+                      (0,0)), mode='constant', constant_values=0)
         
         
         y = np.pad(y, ((0,0), # axis0
                       (border_size, border_size), #axis1
                       (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=-1)
+                      (0,0)), mode='constant', constant_values=0)
     
         
         
