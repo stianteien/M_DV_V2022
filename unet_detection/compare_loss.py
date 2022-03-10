@@ -83,19 +83,20 @@ X_train, y_train, X_val, y_val, X_test, y_test = load_data(path)
 
 train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
 val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
+#AUTOTUNE = tf.data.AUTOTUNE
 
 train_ds = (
     train_dataset
     #.shuffle(1000)
     #.map(f, num_parallel_calls=AUTOTUNE)
-    .batch(32)
-    #.prefetch(-1)
+    #.batch(32)
+    #.prefetch(AUTOTUNE)
 )
 
 val_ds = (
     val_dataset
-    .batch(32)
-    #.prefetch(-1)
+    #.batch(32)
+    #.prefetch(AUTOTUNE)
 )
 
 
