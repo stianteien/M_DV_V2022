@@ -106,8 +106,10 @@ val_ds = (
 
 def multi_mcc_loss(y_true, y_pred, false_pos_penal=1.0):
     # Reshape image to flatten form
-    y_true = K.reshape(y_true, [-1, y_true.shape[-1]])
-    y_pred = K.reshape(y_pred, [-1, y_pred.shape[-1]])
+    #y_true = K.reshape(y_true, [-1, y_true.shape[-1]])
+    #y_pred = K.reshape(y_pred, [-1, y_pred.shape[-1]])
+    y_true = tf.reshape(y_true, [-1, y_true.shape[-1]])
+    y_pred = tf.reshape(y_pred, [-1, y_pred.shape[-1]])
 
     confusion_m = tf.matmul(K.transpose(y_true), y_pred)
     if false_pos_penal != 1.0:
