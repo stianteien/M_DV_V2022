@@ -133,14 +133,17 @@ for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]
         h = model.fit(X_train, y_train ,
               validation_data=(X_val, y_val), 
               #batch_size=32,
-              epochs=10,
+              epochs=1,
               verbose=2)
               #sample_weight=sample_weigths)
               
         all_history[navn].append(h)
+ 
         
-with open('data.json', 'w') as f:
-    json.dump(all_history, f)
+print("lager json")
+ 
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(all_history, f, ensure_ascii=False, indent=4)
 
 
 
