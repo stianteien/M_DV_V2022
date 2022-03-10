@@ -27,7 +27,7 @@ from tensorflow.keras import backend as K
 
 from tensorflow.keras.layers import Input 
 
-from unet_detection.models.vanilla_unet import vanilla_unet
+from M_DV_2022.unet_detection.models.vanilla_unet import vanilla_unet
 
 
 # =============================================================================
