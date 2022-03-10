@@ -68,27 +68,42 @@ plt.imshow(a)
 # Mark whole area as same roof
 # =============================================================================
 
-
-# 30 er alt...
-count = np.unique(markers, return_counts=True)
-most = count[0][count[1].argmax()]
-for i in range(1, np.unique(markers).max()+1):
-    if i is not most:
-        try:
-            most_off = np.bincount(a[markers==i][:,0]).argmax()
-            a[markers == i] = most_off
-        except:
-            pass
-
-
-b = a[:,:,0] / 23 -1 
-b[markers == -1] = -1
-b = b.astype(int)
+def fill_majority(markers, a):
+    count = np.unique(markers, return_counts=True)
+    most = count[0][count[1].argmax()]
+    for i in range(1, np.unique(markers).max()+1):
+        if i is not most:
+            try:
+                most_off = np.bincount(a[markers==i][:,0]).argmax()
+                a[markers == i] = most_off
+            except:
+                pass
+    
+    
+    b = a[:,:,0] / 23 -1 
+    b[markers == -1] = -1
+    b = b.astype(int)
+    return b, most
 
 # =============================================================================
-# Combine different watersheds
+# Find most in a img
 # =============================================================================
+img = np.uint8(img*23)
+
+markers, a = water(img, threshold=0.6)
+b, most = fill_majority(markers, a)
+ss = b
+img[markers!=most] = 0
+
+markers, a = water(img, threshold=0.5)
+b, most = fill_majority(markers, a)
 ss[b>-1] = b[b>-1]
+img[markers!=most] = 0
+
+markers, a = water(img, threshold=0.3)
+b, most = fill_majority(markers, a)
+ss[b>-1] = b[b>-1]
+img[markers!=most] = 0
 
 
 # =============================================================================
@@ -117,6 +132,62 @@ plt.imshow(ss, cmap=colormap)
 cbar = plt.colorbar(ticks=[-1,0,1,2,3,4,5,6,7,8,9], orientation='horizontal')
 cbar.ax.set_xticklabels(ticks, rotation=25, ha="right")
 plt.show()
+
+# =============================================================================
+# Combine classes
+# =============================================================================
+
+ss += 1
+ticks = np.array(ticks)
+t = ticks[ss]
+    
+
+classes=    {"None":"None",
+     "eternit": "eternit",
+     "tar roofing paper": "tar roofing paper",
+     "black ceramic":"ceramic", 
+                  "black concrete":"concrete",
+                  "brown concrete":"concrete",
+                  "red concrete":"concrete",
+                  "dark metal": "metal",
+                  "grayish metal": "metal",
+                  "light metal": "metal",
+                  "red metal": "metal"}
+
+
+for i in classes:
+    key = i
+    value = classes[key]
+    t[t == key] = value
+
+new_classes = {"None": 0,
+               "ceramic": 1,
+               "concrete": 2,
+               "eternit": 3,
+               "metal": 4,
+               "tar roofing paper":5}
+for i in new_classes:
+    key = i
+    value = new_classes[key]
+    t[t == key] = value
+
+t = t.astype(int)
+
+
+# Hvis den nye
+
+colors=mcp.gen_color(cmap="tab10",n=np.unique(t).shape[0])
+colormap = ListedColormap(colors)
+
+plt.imshow(t, cmap=colormap)
+cbar = plt.colorbar(ticks=[i for i in range(np.unique(t).shape[0])],
+                    orientation='horizontal')
+cbar.ax.set_xticklabels(new_classes, rotation=25, ha="right")
+plt.show()
+
+
+
+
 
 
 
