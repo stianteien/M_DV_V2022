@@ -9,8 +9,8 @@ Created on Thu Mar 10 09:46:58 2022
 
 import matplotlib.pyplot as plt
 import numpy as np
-from cv2 import Sobel, Laplacian, watershed
-import cv2 as cv
+#from cv2 import Sobel, Laplacian, watershed
+#import cv2 as cv
 import seaborn as sns
 
 import json
