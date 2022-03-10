@@ -139,6 +139,7 @@ all_history = {}
 
 for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]:
     all_history[navn] = []
+    print(navn)
     for i in range(5):
         
         u = vanilla_unet()
