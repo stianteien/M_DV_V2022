@@ -89,13 +89,13 @@ train_ds = (
     train_dataset
     #.shuffle(1000)
     #.map(f, num_parallel_calls=AUTOTUNE)
-    #.batch(32)
+    .batch(32)
     #.prefetch(AUTOTUNE)
 )
 
 val_ds = (
     val_dataset
-    #.batch(32)
+    .batch(32)
     #.prefetch(AUTOTUNE)
 )
 
@@ -153,7 +153,7 @@ for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]
         
         h = model.fit(train_ds,
               validation_data=(val_ds), 
-              batch_size=32,
+              #batch_size=32,
               epochs=1,
               verbose=2)
               #sample_weight=sample_weigths)
