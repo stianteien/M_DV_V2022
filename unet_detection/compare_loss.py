@@ -134,13 +134,13 @@ for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]
               validation_data=(X_val, y_val), 
               #batch_size=32,
               epochs=10,
-              verbose=1)
+              verbose=2)
               #sample_weight=sample_weigths)
               
         all_history[navn].append(h)
         
-with open("student.json", "w") as write_file:
-    json.dump(all_history, write_file, indent=4)
+with open('data.json', 'w') as f:
+    json.dump(all_history, f)
 
 
 
