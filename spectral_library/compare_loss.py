@@ -20,7 +20,7 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 from mycolorpy import colorlist as mcp
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import tensorflow_addons as tfa
+from tensorflow_addons.metrics import F1Score
 
 import tensorflow as tf
 from tensorflow.keras import backend as K
@@ -119,7 +119,7 @@ all_history = {}
 u = vanilla_unet()
 
 img1 = Input(shape=(128,128,399))
-f1 = tfa.metrics.F1Score(num_classes=6, average='micro')
+f1 = F1Score(num_classes=6, average='micro')
 
 for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]:
     all_history[navn] = []
