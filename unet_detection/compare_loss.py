@@ -81,6 +81,25 @@ path="data/roofs/"
 X_train, y_train, X_val, y_val, X_test, y_test = load_data(path)
 
 
+train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
+AUTOTUNE = tf.data.AUTOTUNE
+
+train_ds = (
+    train_dataset
+    #.shuffle(1000)
+    #.map(f, num_parallel_calls=AUTOTUNE)
+    .batch(32)
+    .prefetch(AUTOTUNE)
+)
+
+val_ds = (
+    val_dataset
+    .batch(32)
+    .prefetch(AUTOTUNE)
+)
+
+
 # =============================================================================
 # Helping functions
 # =============================================================================
@@ -116,23 +135,25 @@ def multi_mcc_loss(y_true, y_pred, false_pos_penal=1.0):
 
 
 all_history = {}
-u = vanilla_unet()
 
-img1 = Input(shape=(128,128,399))
-f1 = F1Score(num_classes=6, average='micro')
 
 for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]:
     all_history[navn] = []
     for i in range(5):
-        K.clear_session()
+        
+        u = vanilla_unet()
+        
+        img1 = Input(shape=(128,128,399))
+        f1 = F1Score(num_classes=6, average='micro')
+        #K.clear_session()
         model = u.get_unet(img1, None, n_classes=6, last_activation='softmax')
         model.compile(optimizer='adam',
                   loss=loss,
                   metrics=[f1])
         
-        h = model.fit(X_train, y_train ,
-              validation_data=(X_val, y_val), 
-              #batch_size=32,
+        h = model.fit(train_ds,
+              validation_data=(val_ds), 
+              batch_size=32,
               epochs=1,
               verbose=2)
               #sample_weight=sample_weigths)
