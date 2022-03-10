@@ -144,12 +144,11 @@ for navn, loss in [('CCE', 'categorical_crossentropy'), ('MCC', multi_mcc_loss)]
         u = vanilla_unet()
         
         img1 = Input(shape=(128,128,399))
-        f1 = F1Score(num_classes=6, average='micro')
+        #f1 = F1Score(num_classes=6, average='micro')
         #K.clear_session()
         model = u.get_unet(img1, None, n_classes=6, last_activation='softmax')
         model.compile(optimizer='adam',
-                  loss=loss,
-                  metrics=[f1])
+                  loss=loss)
         
         h = model.fit(train_ds,
               validation_data=(val_ds), 
