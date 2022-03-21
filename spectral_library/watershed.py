@@ -16,12 +16,19 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 from mycolorpy import colorlist as mcp
 
-
 # =============================================================================
 # Load data
 # =============================================================================
 
-img = np.load("roof_map.npy") + 1
+img = np.load("roof_map.npy")
+classes = ["None", "unknown", "black concrete", "metal roofing", "black ceramic", "brown concrete", 
+           "red concrete", "gravel", "green ceramic", "pcv", "tar roofing paper"]
+
+colormap = ListedColormap(["black", "gray", "red", "green", "yellow", "cyan", "maroon",
+                           "magenta", "seagreen", "purple", "blue"])
+fig, ax = plt.subplots()
+ax.imshow(ss, cmap=colormap)
+plt.show()
 
 # =============================================================================
 # Watershed
@@ -56,12 +63,12 @@ def water(img, threshold=0.7):
     markers = cv.watershed(a,markers)
     return markers, a
 
-img = np.uint8(img*23)
+# img = np.uint8(img*23)
 
-markers, a = water(img, threshold=0.3) # start høyt, gå lavere
+# markers, a = water(img, threshold=0.3) # start høyt, gå lavere
 
-a[markers == -1] = [255,0,0]
-plt.imshow(a)
+# a[markers == -1] = [255,0,0]
+# plt.imshow(a)
 
 # img[markers!=most] = 0; 
 # =============================================================================
@@ -69,26 +76,39 @@ plt.imshow(a)
 # =============================================================================
 
 def fill_majority(markers, a):
+    # Mye if else - se til senere om det kan fikses opp i.
+    
     count = np.unique(markers, return_counts=True)
     most = count[0][count[1].argmax()]
     for i in range(1, np.unique(markers).max()+1):
         if i is not most:
             try:
-                most_off = np.bincount(a[markers==i][:,0]).argmax()
-                a[markers == i] = most_off
+                if np.bincount(a[markers==i][:,0]).shape[0] > 2:
+                    # Then there is more than None and unknown in the object
+                    most_off = np.bincount(a[markers==i][:,0]).argmax()
+                    if most_off == 1:
+                        # Pick out second most
+                        l = np.argsort(np.bincount(a[markers==i][:,0]))[-2]
+                        a[markers == i] = l
+                    else:
+                        a[markers == i] = most_off
+                    
+                else:
+                    most_off = np.bincount(a[markers==i][:,0]).argmax()
+                    a[markers == i] = most_off
             except:
                 pass
     
-    
-    b = a[:,:,0] / 23 -1 
+    b = a.astype(int)
+    b = b[:,:,0] -1 
     b[markers == -1] = -1
-    b = b.astype(int)
+    
     return b, most
 
 # =============================================================================
 # Find most in a img
 # =============================================================================
-img = np.uint8(img*23)
+img = np.uint8(img)
 
 markers, a = water(img, threshold=0.6)
 b, most = fill_majority(markers, a)
@@ -111,27 +131,16 @@ img[markers!=most] = 0
 # =============================================================================
 
 
-ticks = ["None"]
-ticks.extend(['black concrete',
- 'grayish metal',
- 'light metal',
- 'tar roofing paper',
- 'eternit',
- 'dark metal',
- 'black ceramic',
- 'red metal',
- 'brown concrete',
- 'red concrete'])
-
-np.unique(b)
-
-colors=mcp.gen_color(cmap="tab20",n=11)
-colormap = ListedColormap(colors)
-
 plt.imshow(ss, cmap=colormap)
 cbar = plt.colorbar(ticks=[-1,0,1,2,3,4,5,6,7,8,9], orientation='horizontal')
-cbar.ax.set_xticklabels(ticks, rotation=25, ha="right")
+cbar.ax.set_xticklabels(classes, rotation=35, ha="right")
 plt.show()
+
+# =============================================================================
+# Save map
+# =============================================================================
+
+np.save("label.npy", ss)
 
 # =============================================================================
 # Combine classes

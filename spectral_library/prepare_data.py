@@ -28,7 +28,7 @@ import datetime
 roofs = Image.open("E:/M-DV-STeien/databaseFKB2019/04/04_bygning_30cm.tif")
 roofs = np.array(roofs)
 
-label = np.load("label_few.npy")
+label = np.load("label.npy")+1
 
 nDSM_30 = Image.open("E:/M-DV-STeien/juni2021/04/lidar/2021_04_nDSM_30cm_fitted.tif") 
 nDSM_30 = np.array(nDSM_30)
@@ -45,7 +45,7 @@ class data_maker:
     def __init__(self):
         pass
     
-    def make_train_val_test(self, dist=[6,2,2]):
+    def make_train_val_test(self, dist=[6,2,2], test_chronological=False):
         assert sum(dist) == 10, "sum of dist != 10 (100%)"
         
         
@@ -68,13 +68,20 @@ class data_maker:
                  n=20)
         
         # Make test data
-        print(f"{datetime.datetime.now()} - Starts making test set")
-        self.make_set(fnameX="E:/M-DV-STeien/juni2021/04/temp_data/X_data_test.npy",
+        if not test_chronological:
+            print(f"{datetime.datetime.now()} - Starts making test set")
+            self.make_set(fnameX="E:/M-DV-STeien/juni2021/04/temp_data/X_data_test.npy",
+                     
+                     fnamey="E:/M-DV-STeien/juni2021/04/temp_data/y_data_test.npy",
+                     cutoff1=dist[0]+dist[1],
+                     cutoff2=dist[0]+dist[1]+dist[2],
+                     n=50)
+        else:
+            self.make_set_chronological(fnameX="E:/M-DV-STeien/juni2021/04/temp_data/X_data_test.npy",
                  
                  fnamey="E:/M-DV-STeien/juni2021/04/temp_data/y_data_test.npy",
                  cutoff1=dist[0]+dist[1],
-                 cutoff2=dist[0]+dist[1]+dist[2],
-                 n=50)
+                 cutoff2=dist[0]+dist[1]+dist[2])
         
         
     # =============================================================================
@@ -114,8 +121,8 @@ class data_maker:
         # =============================================================================
         img_to_use = hs_pca_ndsm
         
-        X_shape = 112
-        y_shape = 112
+        X_shape = 128
+        y_shape = 128
 
         X_r,X_c,X_d = img_to_use.shape
         y_r,y_c = roof_mask.shape
@@ -145,30 +152,92 @@ class data_maker:
         # =============================================================================
         # Make black border on all images
         # =============================================================================
-        border_size = 8
+        # border_size = 8
         
-        X = np.pad(X, ((0,0), # axis0
-                      (border_size, border_size), #axis1
-                      (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=0)
+        # X = np.pad(X, ((0,0), # axis0
+        #               (border_size, border_size), #axis1
+        #               (border_size, border_size),
+        #               (0,0)), mode='constant', constant_values=0)
         
         
-        y = np.pad(y, ((0,0), # axis0
-                      (border_size, border_size), #axis1
-                      (border_size, border_size),
-                      (0,0)), mode='constant', constant_values=0)
+        # y = np.pad(y, ((0,0), # axis0
+        #               (border_size, border_size), #axis1
+        #               (border_size, border_size),
+        #               (0,0)), mode='constant', constant_values=0)
     
         
         
         # =============================================================================
         # Save data
         # =============================================================================
+        print(np.unique(y, return_counts=True))
         np.save(fnameX, X)
         np.save(fnamey, y)
+        
+        
+    def make_set_chronological(self, fnameX, fnamey, cutoff1, cutoff2):
+        hs_img = hs
+        roof_mask = label
+        
+        cutoff1 = int(cutoff1/10 * hs_img.shape[1])
+        cutoff2 = int(cutoff2/10 * hs_img.shape[1])
+        
+        
+        hs_img = hs_img[:,cutoff1:cutoff2,:]
+        roof_mask = roof_mask[:,cutoff1:cutoff2]
+        nDSM = nDSM_30[:,cutoff1:cutoff2]
+        
+        hs_img = np.dstack((hs_img, nDSM))
+        
+        # =============================================================================
+        # Find shape to cut into
+        # =============================================================================
+        X_shape = 128
+        y_shape = 128
+        
+        nx,ny = np.floor(np.array(roof_mask.shape) / X_shape)
+        
+        X = []
+        y = []
+        
+        for x_ in range(int(nx)):
+            for y_ in range(int(ny)):
+                X.append(hs_img[int(x_*X_shape):int(x_*X_shape)+X_shape,
+                                int(y_*y_shape):int(y_*y_shape)+y_shape,:])
+                y.append(roof_mask[int(x_*X_shape):int(x_*X_shape)+X_shape,
+                                   int(y_*y_shape):int(y_*y_shape)+y_shape])
+                
+        # [1 2 3 4
+        #  5 6 7 8]  <- Slik blir bildene
+                
+        X = np.array(X)
+        y = np.array(y)
+        
+        print(np.unique(y, return_counts=True))
+        print(f"nx:{nx}, ny:{ny}")
+        np.save(fnameX, X)
+        np.save(fnamey, y)
+        
+        
+        # v = []
+        # o = 0
+        # for i in range(int(nx)):
+        #     b = np.array(y[o])
+        #     o += 1
+        #     for j in range(1,int(ny)):
+        #         b = np.append(b, y[o], axis=1)
+        #         o += 1
+                
+        #     if len(v) == 0:
+        #         v = b
+        #     else:
+        #         v = np.append(v, b, axis=0)
+           
+            
 
 
 # =============================================================================
 # Acitivate function for files
 # =============================================================================
 d = data_maker()
-d.make_train_val_test()
+d.make_train_val_test(test_chronological=True)
