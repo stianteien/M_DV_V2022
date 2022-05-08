@@ -22,7 +22,7 @@ from mycolorpy import colorlist as mcp
 
 img = np.load("roof_map.npy")
 classes = ["None", "unknown", "black concrete", "metal roofing", "black ceramic", "brown concrete", 
-           "red concrete", "gravel", "green ceramic", "pcv", "tar roofing paper"]
+           "red concrete", "gravel", "green ceramic", "pvc", "tar roofing paper"]
 
 colormap = ListedColormap(["black", "gray", "red", "green", "yellow", "cyan", "maroon",
                            "magenta", "seagreen", "purple", "blue"])
